@@ -1,25 +1,27 @@
-from rest_framework.serializers import ModelSerializer
-from . models import User, Client, Freelancer, Admin
+from django.contrib.auth import get_user_model
+from rest_framework import serializers
 
 
+User = get_user_model()
 
-class UserSerializer(ModelSerializer):
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'name', 'email', 'role', 'skills', 'rating']
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
 
-class AdminSerializer(ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=8)
+
     class Meta:
-        model = Admin
-        fields = ['id', 'user']
+        model = User
+        fields = ('username', 'email', 'password', 'first_name', 'last_name')
 
-class ClientSerializer(ModelSerializer):
-    class Meta:
-        model = Client
-        fields = ['id', 'company_name', 'job_success_rate', 'spending']
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
 
-class FreelancerSerializer(ModelSerializer):
-    class Meta:
-        model = Freelancer
-        fields = ['id', 'user', 'portfolio', 'job_applications', 'job_success_rate', 'earnings']
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)

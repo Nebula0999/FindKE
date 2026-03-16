@@ -1,191 +1,152 @@
-# FindKE
+# FindKE API
 
-A freelance job marketplace platform built with Django and PostgreSQL. Connect clients with freelancers, manage job postings, applications, and complete projects with integrated review and rating systems.
+FindKE is a Django REST API for user authentication, personal task management, and reminders, backed by Neon PostgreSQL.
 
-## 🚀 Features
+## Tech Stack
 
-- **User Management**: Client, Freelancer, and Admin roles with JWT authentication
-- **Job Management**: Post, apply, and track job projects
-- **Job Assignments**: Assign freelancers to jobs with status tracking
-- **Reviews & Ratings**: Rate and review completed work
-- **Real-time Messaging**: Communicate between clients and freelancers
-- **REST API**: Full RESTful API with Django REST Framework
-- **JWT Authentication**: Secure token-based authentication with SimpleJWT
+- Django 6
+- Django REST Framework
+- DRF Token Authentication
+- PostgreSQL (Neon)
 
-## 🛠️ Tech Stack
+## Project Structure
 
-- **Backend**: Django 5+ with Django REST Framework
-- **Database**: PostgreSQL (via Neon)
-- **Authentication**: Simple JWT
-- **CORS Support**: django-cors-headers
-- **Database Driver**: psycopg (PostgreSQL adapter)
-- **Environment Management**: python-dotenv
-
-## 📋 Prerequisites
-
-- Python 3.8+
-- PostgreSQL database (or Neon account)
-- pip or poetry for dependency management
-
-## 🔧 Installation & Setup
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/Nebula0999/FindKE.git
-cd FindKE
-```
-
-### 2. Create and activate virtual environment
-```bash
-python -m venv .venv
-
-# On Windows
-.venv\Scripts\Activate.ps1
-
-# On macOS/Linux
-source .venv/bin/activate
-```
-
-### 3. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure environment variables
-Create a `.env` file in the project root with your Neon PostgreSQL credentials:
-```dotenv
-PGHOST='your-neon-host.aws.neon.tech'
-PGDATABASE='neondb'
-PGUSER='your_neon_user'
-PGPASSWORD='your_neon_password'
-PGPORT=5432
-```
-
-Get these credentials from your [Neon Console](https://console.neon.tech) → Project → Connect.
-
-### 5. Run migrations
-```bash
-python manage.py migrate
-```
-
-### 6. Create superuser (optional, for admin panel)
-```bash
-python manage.py createsuperuser
-```
-
-### 7. Start development server
-```bash
-python manage.py runserver
-```
-
-Visit `http://localhost:8000` to verify the connection.
-
-## 📁 Project Structure
-
-```
+```text
 FindKE/
-├── FindKE/              # Main project settings
-│   ├── settings.py      # Django configuration with Neon DB settings
-│   ├── urls.py          # URL routing
-│   ├── views.py         # Test view for DB connection
-│   └── wsgi.py
-├── users/               # User authentication & profiles
-│   ├── models.py        # User, Client, Freelancer, Admin models
-│   ├── serializers.py   # DRF serializers
-│   ├── views.py         # API endpoints
-│   └── migrations/
-├── jobs/                # Job posting & management
-│   ├── models.py        # JobPosting, JobApplication, JobAssignment, etc.
-│   ├── serializers.py   # Job serializers
-│   ├── views.py         # Job API endpoints
-│   └── migrations/
-├── reviews/             # Review & rating system
-│   ├── models.py        # Review model
-│   └── migrations/
-├── core/                # Core utilities
-├── templates/           # HTML templates
-├── manage.py            # Django management script
-├── .env                 # Environment variables (not tracked)
-└── README.md            # This file
+	README.md
+	Findke/
+		.env
+		manage.py
+		Findke/
+			settings.py
+			urls.py
+		users/
+		tasks/
+		reminders/
 ```
 
-## 🔌 Database Models
+## Quick Start
+
+1. Create and activate a virtual environment.
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+2. Install dependencies.
+
+```powershell
+pip install django djangorestframework psycopg2-binary python-dotenv
+```
+
+3. Create Findke/.env with your Neon credentials.
+
+```dotenv
+PGHOST=your-neon-host
+PGDATABASE=findke_db
+PGUSER=your-neon-user
+PGPASSWORD=your-neon-password
+PGPORT=5432
+SECRET_KEY=your-django-secret-key
+```
+
+4. Apply migrations.
+
+```powershell
+python .\Findke\manage.py migrate
+```
+
+5. Run the API.
+
+```powershell
+python .\Findke\manage.py runserver
+```
+
+## Authentication
+
+The API uses token authentication.
+
+- Send this header for protected endpoints:
+
+```text
+Authorization: Token <your_token>
+```
+
+## API Base URL
+
+```text
+http://127.0.0.1:8000/api/
+```
+
+## Endpoints
 
 ### Users
-- `User`: Extended Django User with roles (Client, Freelancer, Admin)
-- `Client`: Profile for clients with spending and success rates
-- `Freelancer`: Profile for freelancers with portfolio and earnings
-- `Admin`: Admin profile
 
-### Jobs
-- `JobPosting`: Job listings created by clients
-- `JobApplication`: Freelancer applications to job postings
-- `JobAssignment`: Assignment of freelancer to job
-- `JobCompletion`: Job completion tracking and payment
-- `Message`: In-app messaging between users
+- GET users/register/
+	- Returns required input fields and an example payload.
+- POST users/register/
+	- Registers a user and returns token + user data.
+- POST users/login/
+	- Returns token + user data for valid credentials.
+- GET users/me/
+	- Returns authenticated user profile.
 
-### Reviews
-- `Review`: Reviews and ratings after job completion
+### Tasks
 
-## 🚀 API Endpoints
+- GET tasks/
+	- List current user's tasks.
+- POST tasks/
+	- Create a task for current user.
+- GET tasks/<id>/
+	- Retrieve one of current user's tasks.
+- PUT/PATCH tasks/<id>/
+	- Update one of current user's tasks.
+- DELETE tasks/<id>/
+	- Delete one of current user's tasks.
 
-### Users
-- `GET/POST /users/` - List/create users
-- `GET /users/<id>/` - Get user details
+Task fields:
 
-### Jobs
-- `GET/POST /jobs/` - List/create job postings
-- `GET /jobs/<id>/` - Get job details
-- `POST /jobs/<id>/apply/` - Apply to a job
-- `GET /jobs/<id>/applications/` - Get job applications
+- ide (UUID, read-only)
+- title
+- description
+- priority (low, medium, high)
+- completed
+- created_at (read-only)
+- updated_at (read-only)
 
-### Reviews
-- `GET/POST /reviews/` - List/create reviews
+### Reminders
 
-## 🧪 Running Tests
+- GET reminders/
+	- List current user's reminders.
+- POST reminders/
+	- Create reminder for one of current user's tasks.
+- GET reminders/<id>/
+	- Retrieve one of current user's reminders.
+- PUT/PATCH reminders/<id>/
+	- Update one of current user's reminders.
+- DELETE reminders/<id>/
+	- Delete one of current user's reminders.
 
-```bash
-python manage.py test
-```
+Reminder fields:
 
-## 📝 Environment Variables
+- ide (UUID, read-only)
+- task (task id)
+- title
+- description
+- remind_at
+- created_at (read-only)
+- updated_at (read-only)
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `PGHOST` | PostgreSQL host | `ep-super-sun.aws.neon.tech` |
-| `PGDATABASE` | Database name | `neondb` |
-| `PGUSER` | Database user | `neondb_owner` |
-| `PGPASSWORD` | Database password | `your-secure-password` |
-| `PGPORT` | Database port | `5432` |
+## Example Flow
 
-## 🐛 Troubleshooting
+1. Register user at POST /api/users/register/.
+2. Save token from response.
+3. Create tasks at POST /api/tasks/ using Authorization header.
+4. Create reminders at POST /api/reminders/ with task id and remind_at.
 
-### Migration Errors
-If you encounter migration errors:
-```bash
-python manage.py migrate --fake-initial
-```
+## Notes
 
-### Connection Issues
-Verify environment variables are set correctly and Neon instance is active.
-
-### Permission Errors
-Make sure you're using the Nebula0999 GitHub account credentials:
-```bash
-git credential reject https://github.com
-```
-
-## 📚 Documentation
-
-- [Django Documentation](https://docs.djangoproject.com/)
-- [Django REST Framework](https://www.django-rest-framework.org/)
-- [Neon PostgreSQL](https://neon.tech/docs)
-- [SimpleJWT](https://django-rest-framework-simplejwt.readthedocs.io/)
-
-## 👤 Author
-
-**Nebula0999**
-
-## 📄 License
-
-This project is licensed under the MIT License.
+- Tasks and reminders are always scoped to the authenticated user.
+- Reminder creation/update validates that the task belongs to the same user.
+- Database connection is read from Findke/.env.

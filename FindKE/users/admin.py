@@ -1,9 +1,12 @@
 from django.contrib import admin
-from .models import User, Client, Freelancer, Admin
+from django.contrib.auth.admin import UserAdmin
 
-admin.site.register(User)
-admin.site.register(Client) 
-admin.site.register(Freelancer)
-admin.site.register(Admin)
+from .models import User
 
-# Register your models here.
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+	model = User
+	list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
+	search_fields = ('username', 'email', 'first_name', 'last_name')
+	ordering = ('username',)
