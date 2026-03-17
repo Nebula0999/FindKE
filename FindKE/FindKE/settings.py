@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'reminders',
     'rest_framework',
     'rest_framework.authtoken',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'Findke.urls'
+ROOT_URLCONF = 'FindKE.urls'
 
 TEMPLATES = [
     {
@@ -76,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Findke.wsgi.application'
+WSGI_APPLICATION = 'FindKE.wsgi.application'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
@@ -84,22 +85,39 @@ AUTH_USER_MODEL = 'users.User'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.getenv('PGHOST'),
-        'NAME': os.getenv('PGDATABASE'),
-        'USER': os.getenv('PGUSER'),
-        'PASSWORD': os.getenv('PGPASSWORD'),
-        'PORT': int(os.getenv('PGPORT', 5432)),
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
-        'DISABLE_SERVER_SIDE_CURSORS': True,
-        # Enable health checks to prevent errors from idle connections
-        'CONN_HEALTH_CHECKS': True,
+USE_POSTGRES = all(
+    [
+        os.getenv('PGHOST'),
+        os.getenv('PGDATABASE'),
+        os.getenv('PGUSER'),
+        os.getenv('PGPASSWORD'),
+    ]
+)
+
+if USE_POSTGRES:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'HOST': os.getenv('PGHOST'),
+            'NAME': os.getenv('PGDATABASE'),
+            'USER': os.getenv('PGUSER'),
+            'PASSWORD': os.getenv('PGPASSWORD'),
+            'PORT': int(os.getenv('PGPORT', 5432)),
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+            'DISABLE_SERVER_SIDE_CURSORS': True,
+            # Enable health checks to prevent errors from idle connections
+            'CONN_HEALTH_CHECKS': True,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -126,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
@@ -147,4 +165,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+}
+
+GRAPHENE = {
+    'SCHEMA': 'tasks.schema.schema',
 }

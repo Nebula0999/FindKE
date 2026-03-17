@@ -1,0 +1,54 @@
+name: CI-CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r FindKE/requirements.txt
+
+      - name: Run Django checks
+        env:
+          SECRET_KEY: ci-secret-key
+        run: python FindKE/manage.py check
+
+      - name: Run migrations
+        env:
+          SECRET_KEY: ci-secret-key
+        run: python FindKE/manage.py migrate --noinput
+
+      - name: Run tests
+        env:
+          SECRET_KEY: ci-secret-key
+        run: python FindKE/manage.py test
+
+  cd:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger deploy hook
+        if: ${{ secrets.DEPLOY_WEBHOOK_URL != '' }}
+        run: curl -X POST "${{ secrets.DEPLOY_WEBHOOK_URL }}"
+
+      - name: Skip deploy (no webhook configured)
+        if: ${{ secrets.DEPLOY_WEBHOOK_URL == '' }}
+        run: echo "No DEPLOY_WEBHOOK_URL secret set. CI completed; deployment skipped."
