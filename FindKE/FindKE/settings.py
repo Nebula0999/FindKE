@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 import dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 
 
@@ -27,10 +28,17 @@ dotenv.load_dotenv(BASE_DIR / '.env')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development').lower()
+DEBUG = ENVIRONMENT != 'production'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'https://findke.onrender.com']
+if ENVIRONMENT == 'production' and not SECRET_KEY:
+    raise ImproperlyConfigured('SECRET_KEY must be set in production.')
+
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv('ALLOWED_HOSTS', 'findke.onrender.com,127.0.0.1,localhost').split(',')
+    if host.strip()
+]
 
 
 # Application definition
@@ -48,10 +56,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'graphene_django',
-]
+    'corsheaders',
+    ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,6 +72,18 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'FindKE.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,https://findke.onrender.com').split(',')
+    if origin.strip()
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv('CSRF_TRUSTED_ORIGINS', 'https://findke.onrender.com').split(',')
+    if origin.strip()
+]
 
 TEMPLATES = [
     {
@@ -155,6 +178,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -171,9 +196,11 @@ GRAPHENE = {
     'SCHEMA': 'tasks.schema.schema',
 }
 
-if os.getenv('ENVIRONMENT') == 'production':    
+if ENVIRONMENT == 'production':
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    DEBUG = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
