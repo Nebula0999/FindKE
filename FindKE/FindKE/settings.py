@@ -34,12 +34,7 @@ DEBUG = ENVIRONMENT != 'production'
 if ENVIRONMENT == 'production' and not SECRET_KEY:
     raise ImproperlyConfigured('SECRET_KEY must be set in production.')
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv('ALLOWED_HOSTS', 'findke.onrender.com,127.0.0.1,localhost').split(',')
-    if host.strip()
-]
-
+ALLOWED_HOSTS = ['findke.onrender.com', '127.0.0.1', 'localhost']
 
 # Application definition
 
