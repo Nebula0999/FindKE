@@ -1,8 +1,41 @@
-Django==6.0.3
-djangorestframework==3.16.0
-graphene-django==3.2.3
+# Core Django
+Django==5.1.5
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
+
+# GraphQL
+graphene-django==3.2.2
+graphql-core==3.2.3
+
+# Real-time / WebSockets
+channels==4.1.0
+channels-redis==4.2.0
+daphne==4.1.2
+
+# Database
 psycopg2-binary==2.9.10
-python-dotenv==1.1.1
+
+# Celery & Redis
+celery==5.4.0
+redis==5.2.0
+
+# Authentication
+django-allauth==65.3.0
+PyJWT==2.10.1
+
+# Image/Media handling
+Pillow==11.0.0
+django-storages==1.14.4
+boto3==1.35.93
+
+# CORS & Security
 django-cors-headers==4.6.0
+django-ratelimit==4.1.0
+
+# Utilities
+python-dotenv==1.1.1
 gunicorn==23.0.0
 whitenoise==6.8.2
+
+# Development (optional)
+django-extensions==3.2.3
