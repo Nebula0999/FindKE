@@ -1,4 +1,4 @@
-# FindKE API
+# TASK MANAGER
 
 FindKE is a Django API for user authentication, personal task management, reminders, and GraphQL task queries.
 
