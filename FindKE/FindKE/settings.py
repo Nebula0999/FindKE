@@ -70,7 +70,7 @@ ROOT_URLCONF = 'FindKE.urls'
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
-    for origin in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,https://findke.onrender.com').split(',')
+    for origin in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,https://findke.onrender.com').split(',')
     if origin.strip()
 ]
 
