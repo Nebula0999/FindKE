@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FindKE API Docs</title>
+  <style>
+    :root {
+      --bg-1: #f4efe6;
+      --bg-2: #dbe8f5;
+      --text: #1f2937;
+      --muted: #4b5563;
+      --card: rgba(255, 255, 255, 0.88);
+      --border: rgba(31, 41, 55, 0.15);
+      --swagger: #0f766e;
+      --redoc: #1d4ed8;
+      --graphql: #9333ea;
+      --radius: 16px;
+      --shadow: 0 15px 35px rgba(31, 41, 55, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 15% 20%, var(--bg-2) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 80%, #f9d4c2 0%, transparent 42%),
+                  linear-gradient(140deg, var(--bg-1), #f8fafc);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .panel {
+      width: min(760px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(20px, 4vw, 40px);
+      animation: rise 500ms ease-out;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+      letter-spacing: 0.2px;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .grid {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .swagger {
+      background: color-mix(in srgb, var(--swagger) 14%, white);
+      border-color: color-mix(in srgb, var(--swagger) 35%, white);
+      color: #064e3b;
+    }
+
+    .redoc {
+      background: color-mix(in srgb, var(--redoc) 14%, white);
+      border-color: color-mix(in srgb, var(--redoc) 36%, white);
+      color: #1e3a8a;
+    }
+
+    .graphql {
+      background: color-mix(in srgb, var(--graphql) 14%, white);
+      border-color: color-mix(in srgb, var(--graphql) 32%, white);
+      color: #6b21a8;
+    }
+
+    code {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(31, 41, 55, 0.12);
+      color: #374151;
+      font-size: 0.95rem;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <h1>FindKE API Home</h1>
+    <p>Use one of the documentation explorers below to inspect and test your API endpoints.</p>
+
+    <section class="grid">
+      <a class="btn swagger" href="/api/docs/swagger/">Open Swagger UI</a>
+      <a class="btn redoc" href="/api/docs/redoc/">Open ReDoc</a>
+      <a class="btn graphql" href="/graphql/">Open GraphiQL</a>
+    </section>
+
+    <code>OpenAPI schema: /api/schema/</code>
+  </main>
+</body>
+</html>

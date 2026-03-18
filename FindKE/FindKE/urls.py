@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
 from rest_framework import routers
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from graphene_django.views import GraphQLView
 from tasks.schema import schema
 
@@ -24,9 +26,13 @@ router = routers.DefaultRouter()
 
 
 urlpatterns = [
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
     path('api/tasks/', include('tasks.urls')),
     path('api/reminders/', include('reminders.urls')),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema), name='graphql'),
 ]

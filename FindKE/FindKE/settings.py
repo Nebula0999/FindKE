@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'reminders',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
     'graphene_django',
     'corsheaders',
     ]
@@ -83,7 +84,7 @@ CSRF_TRUSTED_ORIGINS = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -185,6 +186,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'FindKE API',
+    'DESCRIPTION': 'API documentation for FindKE.',
+    'VERSION': '1.0.0',
 }
 
 GRAPHENE = {
