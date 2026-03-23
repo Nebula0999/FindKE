@@ -3,12 +3,15 @@ from rest_framework import permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .models import User
 
 from .serializers import LoginSerializer, RegisterSerializer, UserSerializer
 
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
 
     def get(self, request):
         serializer = RegisterSerializer()
