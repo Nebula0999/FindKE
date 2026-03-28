@@ -82,7 +82,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         'CSRF_TRUSTED_ORIGINS',
-        'https://findke.onrender.com,http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000',
+        'https://findke.onrender.com,http://localhost:5173,https://task-manager-react-eyas.vercel.app/,http://localhost:3000,http://127.0.0.1:3000',
     ).split(',')
     if origin.strip()
 ]
